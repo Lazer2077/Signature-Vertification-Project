@@ -29,6 +29,7 @@ def rotation_normalization(src):
     img_zeros.fill(255)
     print(u_bar)
     print(v_bar)
+    flag=True
     for x in range(rows):   
         for y in range(cols):
             if src[x,y]==0:
@@ -40,15 +41,20 @@ def rotation_normalization(src):
                 new_y+=(cols+1)/2
                 if new_x<rows and new_y<cols:
                     img_zeros[int(new_x),int(new_y)]=0
+                else:
+                    flag=False
     u_sqbar=u_sq/N
     v_sqbar=v_sq/N
     mu=v_bar*u_bar
     I = np.mat([[u_sqbar, mu], [mu, v_sqbar]])
     print("MatrixI"+str(I))
     eig_value,eig_vector=np.linalg.eig(I)
-    print("eigenvalue:"+str(eig_value))
-    print("eigenvector:"+ str(eig_vector))
-    return img_zeros
+    # print("eigenvalue:"+str(eig_value))
+    # print("eigenvector:"+ str(eig_vector))
+    if flag:
+        return img_zeros
+    else:
+        return src
     # for x in range(rows):   
     #     for y in range(cols):
     #         if src[x,y]==0:
@@ -62,21 +68,22 @@ def rotation_normalization(src):
 human=['lzt','lt','yyb','wn','wyx','wzc']
 verbs=['/Anonymous','/Alexander','/Elizabeth','/Romanov','/Williams']
 for i in range(10):
-    '''
-    The none-local path
-     #mat_path=askopenfilename
-    '''
-
     mat_path="C:/Users/Administrator/Desktop/EE301/"
     wrt_path="C:/Users/Administrator/Desktop/EE301/preprocess/"
     last="_{}.png".format(i+1)
-
-    mat_path= mat_path+human[4]+verbs[0]+last
-    wrt_path= wrt_path+human[4]+verbs[0]+last
+    # ext='picture_ano_lzt_1/{}.jpg'.format(i+1)
+    # exwrt='picture_ano_lzt_1/lzt_1/{}.png'.format(i+1)
+    mat_path= mat_path+human[5]+verbs[4]+last#mat_path+ext
+    wrt_path= wrt_path+human[5]+verbs[4]+last#mat_path+exwrt
     print(mat_path)
     mat=cv.imread(mat_path)
+    rows=mat.shape[0]
+    cols=mat.shape[1]
+    if rows!=250 or cols!=450:
+        mat=cv.resize(mat,(450,250))
+        print('resize succeed')
     dst = cv.cvtColor(mat,cv.COLOR_BGR2GRAY)
-    dst= gamma_adjust(dst,0.7)
+    dst= gamma_adjust(dst,1.3)
     dst=cv.blur(dst,(5,5))
     kernel = cv.getStructuringElement(cv.MORPH_RECT, (3, 3))
     dst = cv.morphologyEx(dst, cv.MORPH_OPEN, kernel)
@@ -86,9 +93,8 @@ for i in range(10):
     # img1 = cv.morphologyEx(img1, cv.MORPH_OPEN, kernel)
     # img1 = cv.morphologyEx(img1, cv.MORPH_CLOSE, kernel)
     img1=rotation_normalization(img1)
-    
     #cv.namedWindow('img',0)
-    #cv.imwrite(wrt_path,img1)
-    cv.imshow('img',img1)
-    cv.waitKey(0)
+    cv.imwrite(wrt_path,img1)
+    # cv.imshow('img',img1)
+    # cv.waitKey(0)
     
