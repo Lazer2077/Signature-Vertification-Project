@@ -3,6 +3,7 @@ import cv2 as cv
 import numpy as np
 import os
 import tkinter
+import math
 from tkinter.filedialog import askopenfilename
 def d_OpenDir():
     os.system('explorer C:\\Users\\Administrator\\Desktop\\EE301\\lzt')
@@ -13,6 +14,7 @@ def gamma_adjust(im, gamma=1.0):
 def rotation_normalization(src):
     total_x=0
     total_y=0
+    mu_sum=0
     u_sq=0
     v_sq=0
     N=0
@@ -37,6 +39,7 @@ def rotation_normalization(src):
                 new_y=y-v_bar
                 u_sq+=pow(new_x,2)
                 v_sq+=pow(new_y,2)
+                mu_sum+=(new_x*new_y)
                 new_x+=(rows+1)/2
                 new_y+=(cols+1)/2
                 if new_x<rows and new_y<cols:
@@ -45,12 +48,12 @@ def rotation_normalization(src):
                     flag=False
     u_sqbar=u_sq/N
     v_sqbar=v_sq/N
-    mu=v_bar*u_bar
+    mu=mu_sum/N
     I = np.mat([[u_sqbar, mu], [mu, v_sqbar]])
     print("MatrixI"+str(I))
     eig_value,eig_vector=np.linalg.eig(I)
-    # print("eigenvalue:"+str(eig_value))
-    # print("eigenvector:"+ str(eig_vector))
+    rad=math.atan2(eig_vector[0,0],eig_vector[1,0])
+    print(rad/(np.pi)*180)
     if flag:
         return img_zeros
     else:
@@ -67,14 +70,16 @@ def rotation_normalization(src):
 
 human=['lzt','lt','yyb','wn','wyx','wzc']
 verbs=['/Anonymous','/Alexander','/Elizabeth','/Romanov','/Williams']
+print('angle')
+print(180*math.atan2(250,450)/math.pi)
 for i in range(10):
     mat_path="C:/Users/Administrator/Desktop/EE301/"
     wrt_path="C:/Users/Administrator/Desktop/EE301/preprocess/"
     last="_{}.png".format(i+1)
     # ext='picture_ano_lzt_1/{}.jpg'.format(i+1)
     # exwrt='picture_ano_lzt_1/lzt_1/{}.png'.format(i+1)
-    mat_path= mat_path+human[5]+verbs[4]+last#mat_path+ext
-    wrt_path= wrt_path+human[5]+verbs[4]+last#mat_path+exwrt
+    mat_path= mat_path+human[1]+verbs[1]+last#mat_path+ext
+    wrt_path= wrt_path+human[1]+verbs[1]+last#mat_path+exwrt
     print(mat_path)
     mat=cv.imread(mat_path)
     rows=mat.shape[0]
