@@ -5,7 +5,7 @@
 
  This is the _Signal and System_ course design
  
- Contributor：lzt, wyx, lt
+
 ---
 ## Brief introduction
 **Signature** is a behavioral trait of 
@@ -17,4 +17,9 @@ words may not be exhibited. Signature verification is a method to prevent unauth
 ref at
 [click here](master/preprocessing) 
 ## Core code
+- Gabor Transform and the BP network at
+- HOG+CART at
+- K210 maxipy implement classification at 
+## Basic idea
+ref at report
 
